@@ -1,18 +1,22 @@
-// This component creates a navigation bar
-import React from 'react'
-import {Link} from 'react-router-dom'
-import SignedInLinks from './SignedInLinks'
-import SignedOutLinks from './SignedOutLinks'
-import { connect} from 'react-redux'
+// This component is the navigation bar
+import React from 'react';
+import {Link} from 'react-router-dom';
+import SignedInLinks from './SignedInLinks';
+import SignedOutLinks from './SignedOutLinks';
+import { connect} from 'react-redux';
+import styles from '../../styles/NavbarStyles.module.css';
+import { compose } from 'redux';
+import { firestoreConnect } from 'react-redux-firebase'
+
 
 export function Navbar(props) {
     const { auth, profile } = props;
-    // console.log(auth);
     const links = auth.uid ? <SignedInLinks profile={profile}/> : <SignedOutLinks />;
     return(
-        <nav className="nav-wrapper blue lighten-2">
+        <nav className={`nav-wrapper ${ styles.background }`}>
             <div className="container">
-                <Link to = '/' className = "left brand-logo">Atlas Life Systems</Link>
+                <Link to = '/' className = {`left ${ styles.title }`} > 
+                Atlas Life Systems</Link>
                 { links }
             </div>
         </nav>
@@ -27,4 +31,9 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps)(Navbar)
+export default compose(
+    connect(mapStateToProps),
+    firestoreConnect([
+        {collection: 'users'}
+    ])
+    )(Navbar)
